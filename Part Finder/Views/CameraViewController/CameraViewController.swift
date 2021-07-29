@@ -49,5 +49,9 @@ extension CameraViewController {
         // Start capture session
         session.commitConfiguration()
         session.startRunning()
+
+        // Create Output
+        let output = AVCaptureVideoDataOutput()
+        session.addOutput(output)
     }
 }
