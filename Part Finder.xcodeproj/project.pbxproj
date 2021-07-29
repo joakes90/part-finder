@@ -13,7 +13,7 @@
 		D091E62626B2E5C0000D91F1 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D091E62426B2E5C0000D91F1 /* Main.storyboard */; };
 		D091E62826B2E5C8000D91F1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D091E62726B2E5C8000D91F1 /* Assets.xcassets */; };
 		D091E62B26B2E5C8000D91F1 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D091E62926B2E5C8000D91F1 /* LaunchScreen.storyboard */; };
-		D091E63626B2E7C0000D91F1 /* CameraViewController+PhotoCaptureDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D091E63526B2E7C0000D91F1 /* CameraViewController+PhotoCaptureDelegate.swift */; };
+		D091E63626B2E7C0000D91F1 /* CameraViewController+AVCaptureVideoDataOutputSampleBufferDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D091E63526B2E7C0000D91F1 /* CameraViewController+AVCaptureVideoDataOutputSampleBufferDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,7 +25,7 @@
 		D091E62726B2E5C8000D91F1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D091E62A26B2E5C8000D91F1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		D091E62C26B2E5C8000D91F1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		D091E63526B2E7C0000D91F1 /* CameraViewController+PhotoCaptureDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CameraViewController+PhotoCaptureDelegate.swift"; sourceTree = "<group>"; };
+		D091E63526B2E7C0000D91F1 /* CameraViewController+AVCaptureVideoDataOutputSampleBufferDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CameraViewController+AVCaptureVideoDataOutputSampleBufferDelegate.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -80,7 +80,7 @@
 			isa = PBXGroup;
 			children = (
 				D091E62226B2E5C0000D91F1 /* CameraViewController.swift */,
-				D091E63526B2E7C0000D91F1 /* CameraViewController+PhotoCaptureDelegate.swift */,
+				D091E63526B2E7C0000D91F1 /* CameraViewController+AVCaptureVideoDataOutputSampleBufferDelegate.swift */,
 			);
 			path = CameraViewController;
 			sourceTree = "<group>";
@@ -166,7 +166,7 @@
 			files = (
 				D091E62326B2E5C0000D91F1 /* CameraViewController.swift in Sources */,
 				D091E61F26B2E5C0000D91F1 /* AppDelegate.swift in Sources */,
-				D091E63626B2E7C0000D91F1 /* CameraViewController+PhotoCaptureDelegate.swift in Sources */,
+				D091E63626B2E7C0000D91F1 /* CameraViewController+AVCaptureVideoDataOutputSampleBufferDelegate.swift in Sources */,
 				D091E62126B2E5C0000D91F1 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
