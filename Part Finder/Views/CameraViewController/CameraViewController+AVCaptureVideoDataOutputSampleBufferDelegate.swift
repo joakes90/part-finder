@@ -15,6 +15,9 @@ extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
 
     // This is called when the session is successfully able to send an updated frame
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
+        DispatchQueue.main.async {
+            self.removeAnnotations()
+        }
         // Just dealing with the many different weird image formates AVFoundation/Vision/CoreML like
         guard let pixelBuffer: CVPixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
 
@@ -34,8 +37,15 @@ extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
             return { completedRequest, error in
                 guard error == nil,
                       let results = completedRequest.results as? [VNRecognizedObjectObservation] else { return }
+                // You may want to do more filtering here.
+                // IE check for over lap, change in objects since the last frame,
+                // or set iou and confidence thresholds by setting a featureProvider on your VNCoreMLModel
                 if !results.isEmpty {
-                    print(results)
+                    // Remember we are running on the video queue
+                    // switch back to main for updating UI
+                    DispatchQueue.main.async {
+                        self.updateLayers(for: results)
+                    }
                 }
             }
         }
