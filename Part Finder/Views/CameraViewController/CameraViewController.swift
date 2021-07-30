@@ -5,25 +5,19 @@
 //  Created by Justin Oakes on 7/29/21.
 //
 
+import AVFoundation
+import CoreML
 import UIKit
-import AVKit
 
 class CameraViewController: UIViewController {
 
     private var captureSession: AVCaptureSession?
     private var previewLayer: AVCaptureVideoPreviewLayer?
-    private var photoOutput: AVCapturePhotoOutput?
-    private var photoSettings: AVCapturePhotoSettings {
-        let settings = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecType.hevc])
-        settings.flashMode = .auto
-        return settings
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         startCaptureSession()
     }
-
 }
 
 extension CameraViewController {
@@ -52,6 +46,7 @@ extension CameraViewController {
 
         // Create Output
         let output = AVCaptureVideoDataOutput()
+        output.setSampleBufferDelegate(self, queue: DispatchQueue(label: "videoQueue"))
         session.addOutput(output)
     }
 }
