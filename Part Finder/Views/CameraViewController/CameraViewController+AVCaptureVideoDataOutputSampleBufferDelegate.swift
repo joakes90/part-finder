@@ -6,6 +6,8 @@
 //
 
 import AVFoundation
+import CoreImage
+import UIKit
 import Vision
 
 // This is a delegate to perform operations on a AVCaptureSession's video buffer
@@ -18,9 +20,8 @@ extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
 
         // Where we bring in the model that powered all the heavy lifting in CreateML
         guard let model = try? VNCoreMLModel(for: FerrariObjectDetector(configuration: MLModelConfiguration()).model) else { return }
-
         let request = VNCoreMLRequest(model: model, completionHandler: requestCompletionHandler)
-        
+
         // Where the magic happens. Passes the buffer we want Vision to analyze and the request we want to Vision to perform on it.
         try? VNImageRequestHandler(cvPixelBuffer: pixelBuffer, options: [:])
             .perform([request])
@@ -32,7 +33,7 @@ extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
         get {
             return { completedRequest, error in
                 guard error == nil,
-                      let results = completedRequest.results as? [VNClassificationObservation] else { return }
+                      let results = completedRequest.results as? [VNRecognizedObjectObservation] else { return }
                 if !results.isEmpty {
                     print(results)
                 }
