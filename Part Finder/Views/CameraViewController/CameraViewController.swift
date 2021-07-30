@@ -13,7 +13,9 @@ class CameraViewController: UIViewController {
 
     private var captureSession: AVCaptureSession?
     private var previewLayer: AVCaptureVideoPreviewLayer?
-    private var annotations = Set<CALayer>()
+    @IBOutlet weak var previewView: UIView!
+    @IBOutlet weak var identificationLabel: UILabel!
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,8 +41,8 @@ extension CameraViewController {
         previewLayer = layer
         layer.videoGravity = .resizeAspectFill
         layer.connection?.videoOrientation = .portrait
-        layer.frame = view.bounds
-        view.layer.addSublayer(layer)
+        layer.frame = previewView.bounds
+        previewView.layer.addSublayer(layer)
 
         // Start capture session
         session.commitConfiguration()
@@ -58,22 +60,10 @@ extension CameraViewController {
 extension CameraViewController {
 
     func updateLayers(for recognizedObjects: [VNRecognizedObjectObservation]) {
-        for object in recognizedObjects {
-            guard let name = object.labels.first?.identifier else { continue }
-            let bounds = bounds(for: object)
-            let shapeLayer = createRoundedRectLayer(with: bounds)
-            let textLayer = createTextLayer(in: bounds, with: name)
-            shapeLayer.addSublayer(textLayer)
-            annotations.insert(shapeLayer)
-            previewLayer?.addSublayer(shapeLayer)
-        }
-    }
-
-    func removeAnnotations() {
-        annotations.forEach { layer in
-            layer.removeFromSuperlayer()
-            annotations.remove(layer)
-        }
+        let names = recognizedObjects
+            .compactMap({ $0.labels.first?.identifier })
+            .joined(separator: "\n")
+        identificationLabel.text = names
     }
 
     // This does some coordinate system conversion to set the bounding box in the correct place
@@ -84,32 +74,5 @@ extension CameraViewController {
                                       width: boundingBox.width,
                                       height: boundingBox.height)
         return VNImageRectForNormalizedRect(fixedBoundingBox, Int(view.frame.width), Int(view.frame.height))
-    }
-
-    func createRoundedRectLayer(with bounds: CGRect) -> CALayer {
-        let shapeLayer = CALayer()
-        shapeLayer.bounds = bounds
-        shapeLayer.position = CGPoint(x: bounds.midX, y: bounds.midY)
-        shapeLayer.backgroundColor = #colorLiteral(red: 0.9404104806, green: 0, blue: 0, alpha: 0.6644581905)
-        shapeLayer.borderColor = #colorLiteral(red: 0.9404104806, green: 0, blue: 0, alpha: 1)
-        shapeLayer.cornerRadius = 14
-        return shapeLayer
-    }
-
-    func createTextLayer(in bounds: CGRect, with name: String) -> CATextLayer {
-        let textLayer = CATextLayer()
-        let attributedString = NSMutableAttributedString(string: "\(name)")
-        let largeFont = UIFont.systemFont(ofSize: 12)
-        let attributes = [NSAttributedString.Key.font: largeFont,
-                          NSAttributedString.Key.foregroundColor: UIColor.white]
-        attributedString.addAttributes(attributes,
-                                       range: NSRange(location: 0, length: name.count))
-        textLayer.string = attributedString
-        textLayer.bounds = CGRect(x: 0, y: 0, width: bounds.size.height, height: bounds.size.width)
-        textLayer.position = CGPoint(x: bounds.midX, y: bounds.midY)
-        textLayer.shadowOpacity = 0.0
-        textLayer.foregroundColor = CGColor(colorSpace: CGColorSpaceCreateDeviceRGB(), components: [1.0, 1.0, 1.0, 1.0])
-        textLayer.contentsScale = 2.0 // retina rendering
-        return textLayer
     }
 }
