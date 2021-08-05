@@ -44,6 +44,10 @@ extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
                     DispatchQueue.main.async {
                         self.updateLayers(for: results)
                     }
+                } else {
+                    DispatchQueue.main.async {
+                        self.clearRects()
+                    }
                 }
             }
         }
@@ -61,7 +65,7 @@ private extension CameraViewController {
         for new in observations {
             for old in self.observations {
                 if new.labels.first?.identifier == old.labels.first?.identifier &&
-                    intersectionOverUnion(old.boundingBox, new.boundingBox) > 0.60 {
+                    intersectionOverUnion(old.boundingBox, new.boundingBox) > 0.75 {
                     matches += 1
                 }
             }

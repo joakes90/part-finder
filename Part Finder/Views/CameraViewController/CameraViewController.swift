@@ -13,6 +13,8 @@ class CameraViewController: UIViewController {
 
     private var captureSession: AVCaptureSession?
     private var previewLayer: AVCaptureVideoPreviewLayer?
+    private var rootLayer: CALayer!
+    private var detectionOverlay: CALayer!
     private var overlayLayers = [CALayer]()
     @IBOutlet weak var previewView: UIView!
     
@@ -20,7 +22,16 @@ class CameraViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        rootLayer = previewView.layer
         startCaptureSession()
+        detectionOverlay = CALayer()
+        detectionOverlay.bounds = CGRect(x: 0.0,
+                                         y: 0.0,
+                                         width: previewView.frame.width,
+                                         height: previewView.frame.height)
+        detectionOverlay.position = CGPoint(x: rootLayer.bounds.midX,
+                                            y: rootLayer.bounds.midY)
+        rootLayer.addSublayer(self.detectionOverlay)
     }
 }
 
@@ -48,7 +59,7 @@ extension CameraViewController {
                               height: previewView.frame.height)
         layer.position = CGPoint(x: previewView.layer.bounds.midX,
                                  y: previewView.layer.bounds.midY)
-        previewView.layer.addSublayer(layer)
+        rootLayer.addSublayer(layer)
 
         // Start capture session
         session.commitConfiguration()
@@ -69,32 +80,48 @@ extension CameraViewController {
         let bounds: [CGRect] = recognizedObjects
             .compactMap({ $0.boundingBox})
             .map({ translateBounds(for: $0) })
-        drawRects(at: bounds)
+        drawRects(for: recognizedObjects)
+//        drawRects(at: bounds)
     }
 
     // This does some coordinate system conversion to set the bounding box in the correct place
     func translateBounds(for rect: CGRect) -> CGRect {
+        let largestSide = rect.width > rect.height ? rect.width : rect.height
         let fixedBoundingBox = CGRect(x: rect.origin.x,
                                       y: 1.0 - rect.origin.y - rect.height,
-                                      width: rect.width,
-                                      height: rect.height)
+                                      width: largestSide,
+                                      height: largestSide)
         
         return VNImageRectForNormalizedRect(fixedBoundingBox,
                                             Int(previewView.frame.width),
                                             Int(previewView.frame.height))
     }
-    
-    func drawRects(at rects: [CGRect]) {
+
+    func drawRects(for observations: [VNRecognizedObjectObservation]) {
+        observations.forEach { observation in
+            let rect = translateBounds(for: observation.boundingBox)
+            let outlineLayer = CALayer()
+            outlineLayer.bounds = rect
+            outlineLayer.position = CGPoint(x: rect.midX, y: rect.midY)
+            outlineLayer.backgroundColor = #colorLiteral(red: 1, green: 0, blue: 0, alpha: 0.5)
+            
+            guard let text = observation.labels.first?.identifier else { return }
+            let textLayer = CATextLayer()
+            textLayer.string = text
+            textLayer.foregroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+            textLayer.font = UIFont.systemFont(ofSize: 24.0)
+            textLayer.position = CGPoint(x: outlineLayer.bounds.midX, y: outlineLayer.bounds.midY)
+            
+            outlineLayer.addSublayer(textLayer)
+            overlayLayers.append(outlineLayer)
+            detectionOverlay.addSublayer(outlineLayer)
+        }
+    }
+
+    func clearRects() {
         overlayLayers.forEach { layer in
             layer.removeFromSuperlayer()
         }
         overlayLayers = []
-        rects.forEach { rect in
-            let layer = CALayer()
-            layer.bounds = rect
-            layer.backgroundColor = #colorLiteral(red: 1, green: 0, blue: 0, alpha: 0.5)
-            overlayLayers.append(layer)
-            previewLayer?.addSublayer(layer)
-        }
     }
 }
