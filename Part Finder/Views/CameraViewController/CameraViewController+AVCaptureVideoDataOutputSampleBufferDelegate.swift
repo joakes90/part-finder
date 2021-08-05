@@ -33,9 +33,10 @@ extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
         get {
             return { completedRequest, error in
                 guard error == nil,
-                      let results = completedRequest.results as? [VNRecognizedObjectObservation] else { return }
+                      let results = completedRequest.results as? [VNRecognizedObjectObservation],
+                      self.frameFinishedUpdating(observations: results) else { return }
                 // You may want to do more filtering here.
-                // IE check for over lap, change in objects since the last frame,
+                // ie check for over lap, change in objects since the last frame,
                 // or set iou and confidence thresholds by setting a featureProvider on your VNCoreMLModel
                 if !results.isEmpty {
                     // Remember we are running on the video queue
@@ -46,5 +47,26 @@ extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
                 }
             }
         }
+    }
+}
+
+private extension CameraViewController {
+
+    func frameFinishedUpdating(observations: [VNRecognizedObjectObservation]) -> Bool {
+        guard self.observations.count == observations.count else {
+            self.observations = observations
+            return false
+        }
+        var matches = 0
+        for new in observations {
+            for old in self.observations {
+                if new.labels.first?.identifier == old.labels.first?.identifier &&
+                    intersectionOverUnion(old.boundingBox, new.boundingBox) > 0.60 {
+                    matches += 1
+                }
+            }
+        }
+        self.observations = observations
+        return matches == observations.count
     }
 }

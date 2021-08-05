@@ -13,9 +13,10 @@ class CameraViewController: UIViewController {
 
     private var captureSession: AVCaptureSession?
     private var previewLayer: AVCaptureVideoPreviewLayer?
+    private var overlayLayers = [CALayer]()
     @IBOutlet weak var previewView: UIView!
-    @IBOutlet weak var identificationLabel: UILabel!
     
+    var observations = [VNRecognizedObjectObservation]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,7 +42,12 @@ extension CameraViewController {
         previewLayer = layer
         layer.videoGravity = .resizeAspectFill
         layer.connection?.videoOrientation = .portrait
-        layer.frame = previewView.bounds
+        layer.bounds = CGRect(x: 0.0,
+                              y: 0.0,
+                              width: previewView.frame.width,
+                              height: previewView.frame.height)
+        layer.position = CGPoint(x: previewView.layer.bounds.midX,
+                                 y: previewView.layer.bounds.midY)
         previewView.layer.addSublayer(layer)
 
         // Start capture session
@@ -60,19 +66,35 @@ extension CameraViewController {
 extension CameraViewController {
 
     func updateLayers(for recognizedObjects: [VNRecognizedObjectObservation]) {
-        let names = recognizedObjects
-            .compactMap({ $0.labels.first?.identifier })
-            .joined(separator: "\n")
-        identificationLabel.text = names
+        let bounds: [CGRect] = recognizedObjects
+            .compactMap({ $0.boundingBox})
+            .map({ translateBounds(for: $0) })
+        drawRects(at: bounds)
     }
 
     // This does some coordinate system conversion to set the bounding box in the correct place
-    func bounds(for observation: VNRecognizedObjectObservation) -> CGRect {
-        let boundingBox = observation.boundingBox
-        let fixedBoundingBox = CGRect(x: boundingBox.origin.x,
-                                      y: 1.0 - boundingBox.origin.y - boundingBox.height,
-                                      width: boundingBox.width,
-                                      height: boundingBox.height)
-        return VNImageRectForNormalizedRect(fixedBoundingBox, Int(view.frame.width), Int(view.frame.height))
+    func translateBounds(for rect: CGRect) -> CGRect {
+        let fixedBoundingBox = CGRect(x: rect.origin.x,
+                                      y: 1.0 - rect.origin.y - rect.height,
+                                      width: rect.width,
+                                      height: rect.height)
+        
+        return VNImageRectForNormalizedRect(fixedBoundingBox,
+                                            Int(previewView.frame.width),
+                                            Int(previewView.frame.height))
+    }
+    
+    func drawRects(at rects: [CGRect]) {
+        overlayLayers.forEach { layer in
+            layer.removeFromSuperlayer()
+        }
+        overlayLayers = []
+        rects.forEach { rect in
+            let layer = CALayer()
+            layer.bounds = rect
+            layer.backgroundColor = #colorLiteral(red: 1, green: 0, blue: 0, alpha: 0.5)
+            overlayLayers.append(layer)
+            previewLayer?.addSublayer(layer)
+        }
     }
 }

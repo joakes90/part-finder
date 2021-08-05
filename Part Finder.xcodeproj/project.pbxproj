@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D035BDC926BC2E3A0099E0F5 /* GeometryUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = D035BDC826BC2E3A0099E0F5 /* GeometryUtilities.swift */; };
 		D091E61F26B2E5C0000D91F1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D091E61E26B2E5C0000D91F1 /* AppDelegate.swift */; };
 		D091E62126B2E5C0000D91F1 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D091E62026B2E5C0000D91F1 /* SceneDelegate.swift */; };
 		D091E62326B2E5C0000D91F1 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D091E62226B2E5C0000D91F1 /* CameraViewController.swift */; };
@@ -18,6 +19,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		D035BDC826BC2E3A0099E0F5 /* GeometryUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeometryUtilities.swift; sourceTree = "<group>"; };
 		D091E61B26B2E5C0000D91F1 /* Part Finder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Part Finder.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D091E61E26B2E5C0000D91F1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D091E62026B2E5C0000D91F1 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -41,6 +43,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		D035BDC726BC2E100099E0F5 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				D035BDC826BC2E3A0099E0F5 /* GeometryUtilities.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
 		D091E61226B2E5C0000D91F1 = {
 			isa = PBXGroup;
 			children = (
@@ -60,6 +70,7 @@
 		D091E61D26B2E5C0000D91F1 /* Part Finder */ = {
 			isa = PBXGroup;
 			children = (
+				D035BDC726BC2E100099E0F5 /* Utilities */,
 				D091E63226B2E730000D91F1 /* Views */,
 				D091E62426B2E5C0000D91F1 /* Main.storyboard */,
 				D091E63D26B43645000D91F1 /* FerrariObjectDetector.mlmodel */,
@@ -171,6 +182,7 @@
 				D091E61F26B2E5C0000D91F1 /* AppDelegate.swift in Sources */,
 				D091E63E26B43645000D91F1 /* FerrariObjectDetector.mlmodel in Sources */,
 				D091E63626B2E7C0000D91F1 /* CameraViewController+AVCaptureVideoDataOutputSampleBufferDelegate.swift in Sources */,
+				D035BDC926BC2E3A0099E0F5 /* GeometryUtilities.swift in Sources */,
 				D091E62126B2E5C0000D91F1 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
