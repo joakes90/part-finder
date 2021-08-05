@@ -106,11 +106,19 @@ extension CameraViewController {
             outlineLayer.backgroundColor = #colorLiteral(red: 1, green: 0, blue: 0, alpha: 0.5)
             
             guard let text = observation.labels.first?.identifier else { return }
+            let attributedString = NSMutableAttributedString(string: "\(text)")
+            let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 18.0),
+                              NSAttributedString.Key.foregroundColor: UIColor.white]
+            attributedString.addAttributes(attributes,
+                                           range: NSRange(location: 0, length: text.count))
+            
             let textLayer = CATextLayer()
-            textLayer.string = text
-            textLayer.foregroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
-            textLayer.font = UIFont.systemFont(ofSize: 24.0)
-            textLayer.position = CGPoint(x: outlineLayer.bounds.midX, y: outlineLayer.bounds.midY)
+            textLayer.string = attributedString
+            textLayer.bounds = CGRect(x: 0, y: 0, width: rect.size.height, height: rect.size.width)
+            textLayer.position = CGPoint(x: rect.midX, y: rect.midY)
+            textLayer.shadowOpacity = 0.0
+            textLayer.foregroundColor = CGColor(colorSpace: CGColorSpaceCreateDeviceRGB(), components: [1.0, 1.0, 1.0, 1.0])
+            textLayer.contentsScale = 2.0 // retina rendering
             
             outlineLayer.addSublayer(textLayer)
             overlayLayers.append(outlineLayer)
