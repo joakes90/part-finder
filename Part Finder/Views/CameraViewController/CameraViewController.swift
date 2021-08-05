@@ -76,28 +76,8 @@ extension CameraViewController {
 // Largely stolen from apple example code
 extension CameraViewController {
 
-    func updateLayers(for recognizedObjects: [VNRecognizedObjectObservation]) {
-        let bounds: [CGRect] = recognizedObjects
-            .compactMap({ $0.boundingBox})
-            .map({ translateBounds(for: $0) })
-        drawRects(for: recognizedObjects)
-//        drawRects(at: bounds)
-    }
-
-    // This does some coordinate system conversion to set the bounding box in the correct place
-    func translateBounds(for rect: CGRect) -> CGRect {
-        let largestSide = rect.width > rect.height ? rect.width : rect.height
-        let fixedBoundingBox = CGRect(x: rect.origin.x,
-                                      y: 1.0 - rect.origin.y - rect.height,
-                                      width: largestSide,
-                                      height: largestSide)
-        
-        return VNImageRectForNormalizedRect(fixedBoundingBox,
-                                            Int(previewView.frame.width),
-                                            Int(previewView.frame.height))
-    }
-
-    func drawRects(for observations: [VNRecognizedObjectObservation]) {
+    func updateLayers(for observations: [VNRecognizedObjectObservation]) {
+        clearRects()
         observations.forEach { observation in
             let rect = translateBounds(for: observation.boundingBox)
             let outlineLayer = CALayer()
@@ -124,6 +104,23 @@ extension CameraViewController {
             overlayLayers.append(outlineLayer)
             detectionOverlay.addSublayer(outlineLayer)
         }
+    }
+
+    // This does some coordinate system conversion to set the bounding box in the correct place
+    func translateBounds(for rect: CGRect) -> CGRect {
+        let largestSide = rect.width > rect.height ? rect.width : rect.height
+        let fixedBoundingBox = CGRect(x: rect.origin.x,
+                                      y: 1.0 - rect.origin.y - rect.height,
+                                      width: largestSide,
+                                      height: largestSide)
+        
+        return VNImageRectForNormalizedRect(fixedBoundingBox,
+                                            Int(previewView.frame.width),
+                                            Int(previewView.frame.height))
+    }
+
+    func drawRects(for observations: [VNRecognizedObjectObservation]) {
+  
     }
 
     func clearRects() {
