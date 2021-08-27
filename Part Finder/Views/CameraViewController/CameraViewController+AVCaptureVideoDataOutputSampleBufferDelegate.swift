@@ -15,7 +15,7 @@ extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
 
     // This is called when the session is successfully able to send an updated frame
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-        // Just dealing with the many different weird image formates AVFoundation/Vision/CoreML like
+        // Just dealing with the many different weird image formats AVFoundation/Vision/CoreML like
         guard let pixelBuffer: CVPixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
 
         // Where we bring in the model that powered all the heavy lifting in CreateML
